@@ -1,48 +1,268 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
+@import url('https://fonts.googleapis.com/css2?family=ABeezee&display=swap');
+@import './theme/light-theme.scss';
+@import './theme/dark-theme.scss';
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+// reset everything
+*, *::before,*::after {
+  box-sizing: border-box;
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0 solid transparent;
 }
+
+// prevent iOS font size change
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+// reset body line-height
 body {
-	line-height: 1;
+  min-height: 100vh;
+  line-height: 1;
+  text-rendering: optimizeSpeed;
 }
-ol, ul {
-	list-style: none;
+
+// all media elements set to block and full width
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
 }
-blockquote, q {
-	quotes: none;
+
+// inherit fonts for inputs and buttons
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
+
+// collapse table
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+// assign button hover state
+button, [role="button"] {
+  cursor: pointer;
+  background-color: transparent;
+  -webkit-tap-highlight-color: transparent;
+  &:focus {
+    outline: 0;
+  }
+}
+
+// reset anchor style
+a {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+// reset heading style
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+// reset list style
+ol, ul {
+  list-style: none;
+}
+
+// reset text input style
+[type=date],
+[type=datetime],
+[type=datetime-local],
+[type=email],
+[type=month],
+[type=number],
+[type=password],
+[type=search],
+[type=tel],
+[type=text],
+[type=time],
+[type=url],
+[type=week],
+textarea,
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  &:focus {
+    outline: 0;
+  }
+}
+
+// reset firefox placeholder opacity
+::-moz-placeholder {
+  opacity: 1;
+}
+
+// reset textarea style
+textarea {
+  // move the label to the top
+  vertical-align: top;
+
+  // turn off scroll bars in IE unless needed
+  overflow: auto;
+}
+
+// reset checkbox and radio style
+[type='checkbox'],
+[type='radio'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  &:focus {
+    outline: 0
+  }
+}
+
+// remove all animations, transitions and smooth scroll for people that prefer not to see them
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:root[data-theme='light'] {
+  --md-sys-color-primary: #{$light-md-sys-color-primary};
+  --md-sys-color-surface-tint: #{$light-md-sys-color-surface-tint};
+  --md-sys-color-on-primary: #{$light-md-sys-color-on-primary};
+  --md-sys-color-primary-container: #{$light-md-sys-color-primary-container};
+  --md-sys-color-on-primary-container: #{$light-md-sys-color-on-primary-container};
+  --md-sys-color-secondary: #{$light-md-sys-color-secondary};
+  --md-sys-color-on-secondary: #{$light-md-sys-color-on-secondary};
+  --md-sys-color-secondary-container: #{$light-md-sys-color-secondary-container};
+  --md-sys-color-on-secondary-container: #{$light-md-sys-color-on-secondary-container};
+  --md-sys-color-tertiary: #{$light-md-sys-color-tertiary};
+  --md-sys-color-on-tertiary: #{$light-md-sys-color-on-tertiary};
+  --md-sys-color-tertiary-container: #{$light-md-sys-color-tertiary-container};
+  --md-sys-color-on-tertiary-container: #{$light-md-sys-color-on-tertiary-container};
+  --md-sys-color-error: #{$light-md-sys-color-error};
+  --md-sys-color-on-error: #{$light-md-sys-color-on-error};
+  --md-sys-color-error-container: #{$light-md-sys-color-error-container};
+  --md-sys-color-on-error-container: #{$light-md-sys-color-on-error-container};
+  --md-sys-color-background: #{$light-md-sys-color-background};
+  --md-sys-color-on-background: #{$light-md-sys-color-on-background};
+  --md-sys-color-surface: #{$light-md-sys-color-surface};
+  --md-sys-color-on-surface: #{$light-md-sys-color-on-surface};
+  --md-sys-color-surface-variant: #{$light-md-sys-color-surface-variant};
+  --md-sys-color-on-surface-variant: #{$light-md-sys-color-on-surface-variant};
+  --md-sys-color-outline: #{$light-md-sys-color-outline};
+  --md-sys-color-outline-variant: #{$light-md-sys-color-outline-variant};
+  --md-sys-color-shadow: #{$light-md-sys-color-shadow};
+  --md-sys-color-scrim: #{$light-md-sys-color-scrim};
+  --md-sys-color-inverse-surface: #{$light-md-sys-color-inverse-surface};
+  --md-sys-color-inverse-on-surface: #{$light-md-sys-color-inverse-on-surface};
+  --md-sys-color-inverse-primary: #{$light-md-sys-color-inverse-primary};
+  --md-sys-color-primary-fixed: #{$light-md-sys-color-primary-fixed};
+  --md-sys-color-on-primary-fixed: #{$light-md-sys-color-on-primary-fixed};
+  --md-sys-color-primary-fixed-dim: #{$light-md-sys-color-primary-fixed-dim};
+  --md-sys-color-on-primary-fixed-variant: #{$light-md-sys-color-on-primary-fixed-variant};
+  --md-sys-color-secondary-fixed: #{$light-md-sys-color-secondary-fixed};
+  --md-sys-color-on-secondary-fixed: #{$light-md-sys-color-on-secondary-fixed};
+  --md-sys-color-secondary-fixed-dim: #{$light-md-sys-color-secondary-fixed-dim};
+  --md-sys-color-on-secondary-fixed-variant: #{$light-md-sys-color-on-secondary-fixed-variant};
+  --md-sys-color-tertiary-fixed: #{$light-md-sys-color-tertiary-fixed};
+  --md-sys-color-on-tertiary-fixed: #{$light-md-sys-color-on-tertiary-fixed};
+  --md-sys-color-tertiary-fixed-dim: #{$light-md-sys-color-tertiary-fixed-dim};
+  --md-sys-color-on-tertiary-fixed-variant: #{$light-md-sys-color-on-tertiary-fixed-variant};
+  --md-sys-color-surface-dim: #{$light-md-sys-color-surface-dim};
+  --md-sys-color-surface-bright: #{$light-md-sys-color-surface-bright};
+  --md-sys-color-surface-container-lowest: #{$light-md-sys-color-surface-container-lowest};
+  --md-sys-color-surface-container-low: #{$light-md-sys-color-surface-container-low};
+  --md-sys-color-surface-container: #{$light-md-sys-color-surface-container};
+  --md-sys-color-surface-container-high: #{$light-md-sys-color-surface-container-high};
+  --md-sys-color-surface-container-highest: #{$light-md-sys-color-surface-container-highest};
+}
+
+:root[data-theme='dark'] {
+  --md-sys-color-primary: #{$dark-md-sys-color-primary};
+  --md-sys-color-surface-tint: #{$dark-md-sys-color-surface-tint};
+  --md-sys-color-on-primary: #{$dark-md-sys-color-on-primary};
+  --md-sys-color-primary-container: #{$dark-md-sys-color-primary-container};
+  --md-sys-color-on-primary-container: #{$dark-md-sys-color-on-primary-container};
+  --md-sys-color-secondary: #{$dark-md-sys-color-secondary};
+  --md-sys-color-on-secondary: #{$dark-md-sys-color-on-secondary};
+  --md-sys-color-secondary-container: #{$dark-md-sys-color-secondary-container};
+  --md-sys-color-on-secondary-container: #{$dark-md-sys-color-on-secondary-container};
+  --md-sys-color-tertiary: #{$dark-md-sys-color-tertiary};
+  --md-sys-color-on-tertiary: #{$dark-md-sys-color-on-tertiary};
+  --md-sys-color-tertiary-container: #{$dark-md-sys-color-tertiary-container};
+  --md-sys-color-on-tertiary-container: #{$dark-md-sys-color-on-tertiary-container};
+  --md-sys-color-error: #{$dark-md-sys-color-error};
+  --md-sys-color-on-error: #{$dark-md-sys-color-on-error};
+  --md-sys-color-error-container: #{$dark-md-sys-color-error-container};
+  --md-sys-color-on-error-container: #{$dark-md-sys-color-on-error-container};
+  --md-sys-color-background: #{$dark-md-sys-color-background};
+  --md-sys-color-on-background: #{$dark-md-sys-color-on-background};
+  --md-sys-color-surface: #{$dark-md-sys-color-surface};
+  --md-sys-color-on-surface: #{$dark-md-sys-color-on-surface};
+  --md-sys-color-surface-variant: #{$dark-md-sys-color-surface-variant};
+  --md-sys-color-on-surface-variant: #{$dark-md-sys-color-on-surface-variant};
+  --md-sys-color-outline: #{$dark-md-sys-color-outline};
+  --md-sys-color-outline-variant: #{$dark-md-sys-color-outline-variant};
+  --md-sys-color-shadow: #{$dark-md-sys-color-shadow};
+  --md-sys-color-scrim: #{$dark-md-sys-color-scrim};
+  --md-sys-color-inverse-surface: #{$dark-md-sys-color-inverse-surface};
+  --md-sys-color-inverse-on-surface: #{$dark-md-sys-color-inverse-on-surface};
+  --md-sys-color-inverse-primary: #{$dark-md-sys-color-inverse-primary};
+  --md-sys-color-primary-fixed: #{$dark-md-sys-color-primary-fixed};
+  --md-sys-color-on-primary-fixed: #{$dark-md-sys-color-on-primary-fixed};
+  --md-sys-color-primary-fixed-dim: #{$dark-md-sys-color-primary-fixed-dim};
+  --md-sys-color-on-primary-fixed-variant: #{$dark-md-sys-color-on-primary-fixed-variant};
+  --md-sys-color-secondary-fixed: #{$dark-md-sys-color-secondary-fixed};
+  --md-sys-color-on-secondary-fixed: #{$dark-md-sys-color-on-secondary-fixed};
+  --md-sys-color-secondary-fixed-dim: #{$dark-md-sys-color-secondary-fixed-dim};
+  --md-sys-color-on-secondary-fixed-variant: #{$dark-md-sys-color-on-secondary-fixed-variant};
+  --md-sys-color-tertiary-fixed: #{$dark-md-sys-color-tertiary-fixed};
+  --md-sys-color-on-tertiary-fixed: #{$dark-md-sys-color-on-tertiary-fixed};
+  --md-sys-color-tertiary-fixed-dim: #{$dark-md-sys-color-tertiary-fixed-dim};
+  --md-sys-color-on-tertiary-fixed-variant: #{$dark-md-sys-color-on-tertiary-fixed-variant};
+  --md-sys-color-surface-dim: #{$dark-md-sys-color-surface-dim};
+  --md-sys-color-surface-bright: #{$dark-md-sys-color-surface-bright};
+  --md-sys-color-surface-container-lowest: #{$dark-md-sys-color-surface-container-lowest};
+  --md-sys-color-surface-container-low: #{$dark-md-sys-color-surface-container-low};
+  --md-sys-color-surface-container: #{$dark-md-sys-color-surface-container};
+  --md-sys-color-surface-container-high: #{$dark-md-sys-color-surface-container-high};
+  --md-sys-color-surface-container-highest: #{$dark-md-sys-color-surface-container-highest};
+}
+
+
+body {
+  background-color: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+  font-family: 'Archivo Black', sans-serif;
+  margin: 0;
+  padding: 0;
 }

@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2rem;
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navLinks {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .navLinks a {
+    text-decoration: none;
+  }
+  
+  .navLinks a:hover {
+    text-decoration: underline;
+  }
+  
+  .launch {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+  
+  }
