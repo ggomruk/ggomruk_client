@@ -1,25 +1,49 @@
 'use client'
 
-import { createChart, ColorType } from "lightweight-charts";
-import { useEffect, useRef } from "react";
+import { createChart, ColorType, LineStyle, CrosshairMode } from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
+import style from '@/app/style/component/chart.module.scss';
 
 const Chart = () => {
-    const chartContainerRef = useRef(null);
-    const chartRef = useRef(null);
+    const chartContainerRef = useRef(null); // used to store chart DOM element
+    const chartRef = useRef(null); // used to store chart instance
     const seriesRef = useRef(null);
+    const wsRef = useRef();
+    const [wsConnected, setWsConnected] = useState(false)
 
     useEffect(() => {
-
+        if (chartRef.current) return;
         const chartOptions = {
+            crosshair: {
+                mode: CrosshairMode.Normal,
+                vertLine: {
+                    width: 8,
+                    color: '#C3BCDB44',
+                    style: LineStyle.Solid,
+                    labelBackgroundColor: '#9B7DFF',
+                },
+                horzLine: {
+                    color: '#9B7DFF',
+                    labelBackgroundColor: '#9B7DFF',
+                },
+            },
             layout: {
-                background: { type: ColorType.Solid, color: 'white' },
-                textColor: '#000',
+                background: { type: ColorType.Solid, color: '#222' },
+                textColor: '#DDD',
+            },
+            grid: {
+                vertLines: { color: '#444' },
+                horzLines: { color: '#444' },
             },
             width: chartContainerRef.current.clientWidth,
-            height: 300
-        }
+            height: chartContainerRef.current.clientHeight
+        };
 
+        // returns IChartAPI instance
         const chart = createChart(chartContainerRef.current, chartOptions);
+        chart.timeScale().applyOptions({
+            borderColor: '#71649C'
+        });
 
         chartRef.current = chart;
 
@@ -38,9 +62,12 @@ const Chart = () => {
         };
         window.addEventListener('resize', handleResize);
 
-        const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
-
-        ws.onmessage = (event) => {
+        wsRef.current = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
+        wsRef.current.onopen = () => {
+            setWsConnected(true);
+        }
+        wsRef.current.onmessage = (event) => {
+            console.log('event being triggered')
             const message = JSON.parse(event.data);
             const candleStick = message.k;
             const open = parseFloat(candleStick.o);
@@ -54,12 +81,16 @@ const Chart = () => {
 
         return () => {
             window.removeEventListener('resize', handleResize);
-            ws.close();
+            if (wsConnected) {
+                wsRef.current?.close();
+            }
         };
-    }, []);
+    }, [wsConnected]);
 
     return (
-        <div ref={chartContainerRef} style={{ width: '100%', height: '300px', position: 'relative' }} />
+        <div className={style['chart-container']}>
+            <div className={style.chart} ref={chartContainerRef}/>
+        </div>
     );
 };
 
