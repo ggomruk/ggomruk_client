@@ -1,18 +1,44 @@
 'use client'
 
-import { createChart, ColorType, LineStyle, CrosshairMode } from "lightweight-charts";
-import { useEffect, useRef, useState } from "react";
+import { createChart, ColorType, LineStyle, CrosshairMode, IChartApi, ISeriesApi } from "lightweight-charts";
+import React, { useCallback, useEffect, useRef } from "react";
 import style from '@/app/style/component/chart.module.scss';
+import useWebsocket from "@/app/hook/useWebsocket";
 
-const Chart = () => {
-    const chartContainerRef = useRef(null); // used to store chart DOM element
-    const chartRef = useRef(null); // used to store chart instance
-    const seriesRef = useRef(null);
-    const wsRef = useRef();
-    const [wsConnected, setWsConnected] = useState(false)
+const Chart : React.FC = () => {
+    const chartContainerRef = useRef<HTMLDivElement|null>(null); // used to store chart DOM element
+    const chartRef = useRef<IChartApi|null>(null); // used to store chart instance
+    const seriesRef = useRef<ISeriesApi<"Candlestick">|null>(null);
+
+    const handleWebsocketMessage = useCallback((event: MessageEvent) => {
+        const message = JSON.parse(event.data);
+        const candleStick = message.k;
+        const open = parseFloat(candleStick.o);
+        const high = parseFloat(candleStick.h);
+        const low = parseFloat(candleStick.l);
+        const close = parseFloat(candleStick.c);
+        const time = candleStick.T / 1000;
+        
+        seriesRef.current?.update({ open, high, low, close, time });
+    }, []);
+
+    // const handleWebsocketMessage = (event: MessageEvent) => {
+    //     const message = JSON.parse(event.data);
+    //     const candleStick = message.k;
+    //     const open = parseFloat(candleStick.o);
+    //     const high = parseFloat(candleStick.h);
+    //     const low = parseFloat(candleStick.l);
+    //     const close = parseFloat(candleStick.c);
+    //     const time = candleStick.T / 1000;
+        
+    //     seriesRef.current?.update({ open, high, low, close, time });
+    // }
+
+    const isConnected = useWebsocket(handleWebsocketMessage);
 
     useEffect(() => {
         if (chartRef.current) return;
+        
         const chartOptions = {
             crosshair: {
                 mode: CrosshairMode.Normal,
@@ -35,12 +61,12 @@ const Chart = () => {
                 vertLines: { color: '#444' },
                 horzLines: { color: '#444' },
             },
-            width: chartContainerRef.current.clientWidth,
-            height: chartContainerRef.current.clientHeight
+            width: chartContainerRef.current?.clientWidth,
+            height: chartContainerRef.current?.clientHeight
         };
 
         // returns IChartAPI instance
-        const chart = createChart(chartContainerRef.current, chartOptions);
+        const chart = createChart(chartContainerRef.current!, chartOptions);
         chart.timeScale().applyOptions({
             borderColor: '#71649C'
         });
@@ -58,34 +84,17 @@ const Chart = () => {
         seriesRef.current = newSeries;
 
         const handleResize = () => {
-            chart.applyOptions({ width: chartContainerRef.current?.clientWidth });
+            if (chartContainerRef.current && chartRef.current) {
+                const width = chartContainerRef.current.clientWidth;
+                chart.applyOptions({ width });
+            }
         };
         window.addEventListener('resize', handleResize);
 
-        wsRef.current = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
-        wsRef.current.onopen = () => {
-            setWsConnected(true);
-        }
-        wsRef.current.onmessage = (event) => {
-            console.log('event being triggered')
-            const message = JSON.parse(event.data);
-            const candleStick = message.k;
-            const open = parseFloat(candleStick.o);
-            const high = parseFloat(candleStick.h);
-            const low = parseFloat(candleStick.l);
-            const close = parseFloat(candleStick.c);
-            const time = candleStick.T / 1000;
-
-            seriesRef.current?.update({ open, high, low, close, time });
-        };
-
         return () => {
             window.removeEventListener('resize', handleResize);
-            if (wsConnected) {
-                wsRef.current?.close();
-            }
         };
-    }, [wsConnected]);
+    }, []);
 
     return (
         <div className={style['chart-container']}>
