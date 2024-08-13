@@ -5,7 +5,12 @@ import React, { useCallback, useEffect, useRef } from "react";
 import style from '@/app/style/component/chart.module.scss';
 import useWebsocket from "@/app/hook/useWebsocket";
 
-const Chart : React.FC = () => {
+interface ChartProps {
+    width: number;
+    height: number;
+}
+
+const Chart : React.FC<ChartProps> = ({width, height}) => {
     const chartContainerRef = useRef<HTMLDivElement|null>(null); // used to store chart DOM element
     const chartRef = useRef<IChartApi|null>(null); // used to store chart instance
     const seriesRef = useRef<ISeriesApi<"Candlestick">|null>(null);
@@ -22,23 +27,10 @@ const Chart : React.FC = () => {
         seriesRef.current?.update({ open, high, low, close, time });
     }, []);
 
-    // const handleWebsocketMessage = (event: MessageEvent) => {
-    //     const message = JSON.parse(event.data);
-    //     const candleStick = message.k;
-    //     const open = parseFloat(candleStick.o);
-    //     const high = parseFloat(candleStick.h);
-    //     const low = parseFloat(candleStick.l);
-    //     const close = parseFloat(candleStick.c);
-    //     const time = candleStick.T / 1000;
-        
-    //     seriesRef.current?.update({ open, high, low, close, time });
-    // }
-
     const isConnected = useWebsocket(handleWebsocketMessage);
 
     useEffect(() => {
         if (chartRef.current) return;
-        
         const chartOptions = {
             crosshair: {
                 mode: CrosshairMode.Normal,
@@ -85,8 +77,9 @@ const Chart : React.FC = () => {
 
         const handleResize = () => {
             if (chartContainerRef.current && chartRef.current) {
-                const width = chartContainerRef.current.clientWidth;
-                chart.applyOptions({ width });
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                chart.resize(width, height);
             }
         };
         window.addEventListener('resize', handleResize);
@@ -96,9 +89,15 @@ const Chart : React.FC = () => {
         };
     }, []);
 
+    // useEffect(() => {
+    //     if (!chartRef.current) return;
+    //     chartRef.current.resize(width, height);
+
+    // },[width, height])
+
     return (
         <div className={style['chart-container']}>
-            <div className={style.chart} ref={chartContainerRef}/>
+            <div className={style['chart']} ref={chartContainerRef}/>
         </div>
     );
 };
