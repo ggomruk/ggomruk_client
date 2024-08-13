@@ -1,7 +1,10 @@
+import style from '@/app/style/component/signal.module.scss';
 
 const Signal = () => {
     return (
-        <p>Signal</p>
+        <div className={style['signal-container']}>
+            <h1 className={style['title']}>Signal</h1>
+        </div>
     )
 }
 

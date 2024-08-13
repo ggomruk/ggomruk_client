@@ -25,7 +25,6 @@ const useWebsocket = (onMessage: (event: MessageEvent) => void) => {
         }
 
         connection.onerror = (error) => {
-            console.error("websocket server connection error", error);
             setIsConnected(false);
         }
 

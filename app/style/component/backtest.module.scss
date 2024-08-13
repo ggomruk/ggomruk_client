@@ -1,0 +1,26 @@
+.backtest-container {
+    width: 100%;
+    height: 100%;   
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.backtest-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.backtest-form-input-container {
+    margin: 1rem 0.5rem;
+}
+
+.backtest-form-input-label {
+    display: block;
+    margin-bottom: 8px;
+}

@@ -1,10 +1,15 @@
 'use client';
 
-import React, { useRef, useState } from 'react'
-import style from '../style/layout/tradeLayout.module.scss'
+import { FunctionComponent, useEffect, useState } from 'react';
+import Panel from './components/panel'
 import Backtest from './components/backtest'
 import Chart from './components/chart'
 import Signal from './components/signal'
+import { Responsive, WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import _ from 'lodash';
+import style from '@/app/style/page/trade.module.scss'
 
 export interface IMarketData {
     open: number;
@@ -14,18 +19,102 @@ export interface IMarketData {
     time: number;
 }
 
-export default function Trade() {
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const DropDrag: FunctionComponent = () => {
+    const [layouts, setLayouts] = useState<{[id: string]: any[]}>({
+        lg: [
+          { i: 'panel', x: 0, y: 0, w: 4, h: 0.5, isDraggable: false, isResizable: false, static: true},
+          { i: 'chart', x: 1, y: 0, w: 4, h: 3, isDraggable: false, isResizable: true }, // start from (0,0), span 2 columns, 2 rows
+          { i: 'backtest', x:0, y: 2, w: 2, h: 2 }, // start from (2,0), span 1 column, 1 row
+          { i: 'signal', x: 2, y: 2, w: 2, h: 2 }, // start from (2,1), span 1 column, 1 row
+        ],
+        md: [
+          { i: 'chart', x: 0, y: 0, w: 5, h: 2 },
+          { i: 'backtest', x: 5, y: 0, w: 3, h: 2 },
+          { i: 'signal', x: 8, y: 0, w: 2, h: 2 },
+        ],
+        sm: [
+          { i: 'chart', x: 0, y: 0, w: 4, h: 2 },
+          { i: 'backtest', x: 0, y: 2, w: 2, h: 2 },
+          { i: 'signal', x: 2, y: 2, w: 2, h: 2 },
+        ],
+      });
+    const [currentBreakPoint, setCurrentBreakPoint] = useState<string>('lg');
+    const [compactType, setCompactType] = useState<string|null>();
+    const [mounted, setMounted] = useState<boolean>(false);
+    const [chartDimension, setChartDimension] = useState<{width: number, height: number}>({width: 0, height: 0});
+    const [toolbox, setToolbox] = useState<{[index:string]: any[]}>({
+        lg: []
+    })
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const onResize = (layout: any, oldItem: any, newItem: any, placeholder: any) => {
+        if (newItem.i == 'chart') {
+            const gridItemElement = document.querySelector(`.react-grid-item[data-grid-id="${newItem.i}"]`) as HTMLElement;
+
+            if (gridItemElement) {
+                // Calculate the new width and height based on the grid item's current size
+                const newWidth = gridItemElement.offsetWidth;
+                const newHeight = gridItemElement.offsetHeight;
+
+                // Update the chart dimensions
+                setChartDimension({ width: newWidth, height: newHeight });
+            }
+        }
+    }
+
+    const onBreakpointChange = (breakpoint: any) => {
+        setCurrentBreakPoint(breakpoint);
+        setToolbox({
+            ...toolbox,
+            [breakpoint]: toolbox[breakpoint] || toolbox[currentBreakPoint] || []
+        })
+    }
+
+    const onLayoutChange = (layout: any, layouts: any) => {
+        setLayouts({...layouts});
+    }
+
+    const generateDOM = () => {
+        const currentLayout = layouts[currentBreakPoint] || [];
+        return _.map(currentLayout, ((item: any) => {
+            return (
+                <div key={item.i} className={style['grid-item']}>
+                    {item.i === 'panel'
+                        ? <Panel key='panel' toolbox={toolbox} setToolbox={setToolbox} />
+                        : item.i === 'chart'
+                            ? <Chart key='chart' width={chartDimension.width} height={chartDimension.height} /> 
+                            : item.i === 'backtest' 
+                                ? <Backtest key="backtest" /> 
+                                : <Signal key="signal" />
+                    }
+                </div>
+            )
+        }))
+    }
+
     return (
-        <div className={style['container']}>
-            <div className={style['pane1']}>
-                <Chart />
-            </div>
-            <div className={style['pane2']}>
-                <Backtest />
-            </div>
-            <div className={style['pane3']}>
-                <Signal />
-            </div>
-        </div>
-    );
-};
+        <>
+            <ResponsiveReactGridLayout 
+            className='layout' 
+            layouts={layouts}
+            breakpoints={{ lg: 1200, md: 996, sm: 768 }}
+            cols={{ lg: 4, md: 2, sm: 1}}
+            rowHeight={window.innerHeight / 6}
+            preventCollision={true}
+            compactType={null}
+            margin={[20, 20]}
+            draggableHandle='.drag-handle'
+            onResize={onResize}
+            >
+                {generateDOM()}
+            </ResponsiveReactGridLayout>
+        </>
+    )
+}
+
+export default DropDrag;
