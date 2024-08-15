@@ -23,7 +23,7 @@ const Panel = () => {
   return (
     <div className={style['panel']}>
       {/* <img className={style['symbol-logo']}/> */}
-      <div className={style['symbol-container']}>
+      <div className={`${style['symbol-container']} ${style['panel-item']}`}>
         <span className={style['symbol-name']}>{symbol.toUpperCase()}</span>
         <button className={style['symbol-button']} onClick={toggleDropDown}>
           <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
@@ -39,10 +39,10 @@ const Panel = () => {
           )
         }
       </div>
-      <span className={style['price']}>59,508.6</span>
-      <span className={style['change']}>+0.19%</span>
-      <span className={style['mark-price']}>Mark price: 59,516.5</span>
-      <span className={style['index-price']}>Index price: 59,553.6</span>
+      <span className={`${style['price']} ${style['panel-item']}`}>59,508.6</span>
+      <span className={`${style['change']} ${style['panel-item']}`}>+0.19%</span>
+      <span className={`{$style['mark-price']} ${style['panel-item']}`}>Mark price: 59,516.5</span>
+      <span className={`${style['index-price']} ${style['panel-item']}`}>Index price: 59,553.6</span>
     </div>
   )
 }

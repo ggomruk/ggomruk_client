@@ -37,8 +37,8 @@ const Backtest : React.FC = () => {
     const [symbol, setSymbol] = useState('BTCUSDT')
     const [usdtAmount, setUsdtAmount] = useState(0);
     const [interval, setInterval] = useState('1m');
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [strategy, setStrategy] = useState<string>('');
     const [strategyParams, setStrategyParams] = useState<any>({});
 

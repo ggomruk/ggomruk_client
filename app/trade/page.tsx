@@ -1,6 +1,6 @@
 'use client';
 
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import Panel from './components/panel'
 import Backtest from './components/backtest'
 import Chart from './components/chart'
@@ -19,9 +19,10 @@ export interface IMarketData {
     time: number;
 }
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const DropDrag: FunctionComponent = () => {
+    const ResponsiveReactGridLayout = useMemo(() => WidthProvider(Responsive), []);
+
     const [layouts, setLayouts] = useState<{[id: string]: any[]}>({
         lg: [
           { i: 'panel', x: 0, y: 0, w: 4, h: 0.5, isDraggable: false, isResizable: false, static: true},
@@ -100,16 +101,19 @@ const DropDrag: FunctionComponent = () => {
     return (
         <>
             <ResponsiveReactGridLayout 
+            useCSSTransforms={false}
             className='layout' 
             layouts={layouts}
             breakpoints={{ lg: 1200, md: 996, sm: 768 }}
             cols={{ lg: 4, md: 2, sm: 1}}
-            rowHeight={window.innerHeight / 6}
-            preventCollision={true}
+            rowHeight={window.innerHeight / 8}
+            preventCollision={true} // prevents items from colliding with each other (items dont move around)
             compactType={null}
-            margin={[20, 20]}
+            containerPadding={[30, 30]}
             draggableHandle='.drag-handle'
             onResize={onResize}
+            autoSize={true}
+            isBounded={true}
             >
                 {generateDOM()}
             </ResponsiveReactGridLayout>

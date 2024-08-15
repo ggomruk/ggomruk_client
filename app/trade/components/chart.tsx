@@ -48,13 +48,12 @@ const Chart : React.FC<ChartProps> = ({width, height}) => {
             layout: {
                 background: { type: ColorType.Solid, color: '#222' },
                 textColor: '#DDD',
+                
             },
             grid: {
                 vertLines: { color: '#444' },
                 horzLines: { color: '#444' },
             },
-            width: chartContainerRef.current?.clientWidth,
-            height: chartContainerRef.current?.clientHeight
         };
 
         // returns IChartAPI instance
@@ -74,31 +73,32 @@ const Chart : React.FC<ChartProps> = ({width, height}) => {
         });
 
         seriesRef.current = newSeries;
-
-        const handleResize = () => {
-            if (chartContainerRef.current && chartRef.current) {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                chart.resize(width, height);
-            }
-        };
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
     }, []);
-
+    
     // useEffect(() => {
-    //     if (!chartRef.current) return;
-    //     chartRef.current.resize(width, height);
+    //     console.log('chart resize effect')
+    //     // const handleResize = () => {
+    //     //     console.log('resize Called')
+    //     //     if (chartContainerRef.current && chartRef.current) {
+    //     //         chartRef.current.resize(width, height);
+    //     //     }
+    //     // };
+    //     // window.addEventListener('resize', handleResize);
 
-    // },[width, height])
+    //     if (chartRef.current) {
+    //         console.log(123)
+    //         chartRef.current.resize(width, height);
+    //     }
+    
+    //     // return () => {
+    //     //     window.removeEventListener('resize', handleResize);
+    //     // };
+    // }, [width, height])
 
     return (
-        <div className={style['chart-container']}>
+        // <div className={style['chart-container']}>
             <div className={style['chart']} ref={chartContainerRef}/>
-        </div>
+        // </div>
     );
 };
 
