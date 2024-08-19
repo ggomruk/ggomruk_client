@@ -2,20 +2,36 @@ import { useGlobalState } from "@/app/context/global.context";
 import style from "@/app/style/component/panel.module.scss"
 import { faArrowCircleDown, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { drop } from "lodash";
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 const Panel = () => {
   const {symbol, setSymbol} = useGlobalState();
   const [dropdownOpen, setDropdownOpen] = React.useState<boolean>(false);
 
-  const getLogoUrl = async (symbol:string) => {
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape' && dropdownOpen) {
+      setDropdownOpen(false);
+    }
+  }, [dropdownOpen])  
 
-  }
+  const handleOutsideClick = useCallback((event: MouseEvent) => {
+    if (event.target instanceof HTMLElement) {
+      if (!event.target.closest(`.${style['panel']}`)) {
+        setDropdownOpen(false);
+      }
+    }
+  }, [])
+  
+  useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('click', handleOutsideClick);
+    }
 
-  const handleSymbolChange = () => {
-    console.log('change symbol')
-  }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [dropdownOpen, handleKeyDown, handleOutsideClick]);
 
   const toggleDropDown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -31,10 +47,16 @@ const Panel = () => {
         {
           dropdownOpen && (
             <div className={style['dropdown-menu']}>
-              <input type="text" className={style['dropdown-input']} onChange={handleSymbolChange}/>
-              <div onClick={() => setSymbol('BTCUSDT')}>BTCUSDT</div>
-              <div onClick={() => setSymbol('ETHUSDT')}>ETHUSDT</div>
-              <div onClick={() => setSymbol('ETHUSDT')}>SOLUSDT</div>
+              <div className={style['dropdown-input-container']}>
+                <FontAwesomeIcon icon={faSearch} className={style['dropdown-input-icon']}/>
+                <input type="text" className={style['dropdown-input']} />
+              </div>
+              <hr className={style['divider']}/>
+              <div className={style['dropdown-item-container']}>
+                <div className={style['dropdown-item']}onClick={() => setSymbol('BTCUSDT')}>BTCUSDT</div>
+                <div className={style['dropdown-item']}onClick={() => setSymbol('ETHUSDT')}>ETHUSDT</div>
+                <div className={style['dropdown-item']}onClick={() => setSymbol('ETHUSDT')}>SOLUSDT</div>
+              </div>
             </div>
           )
         }
