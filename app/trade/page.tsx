@@ -1,6 +1,6 @@
 'use client';
 
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import Panel from './components/panel'
 import Backtest from './components/backtest'
 import Chart from './components/chart'
@@ -10,6 +10,8 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import _ from 'lodash';
 import style from '@/app/style/page/trade.module.scss'
+import useWebsocket from '../hook/useWebsocket';
+import { WeboscketProvider } from '../context/websocket.context';
 
 export interface IMarketData {
     open: number;
@@ -43,15 +45,10 @@ const DropDrag: FunctionComponent = () => {
       });
     const [currentBreakPoint, setCurrentBreakPoint] = useState<string>('lg');
     const [compactType, setCompactType] = useState<string|null>();
-    const [mounted, setMounted] = useState<boolean>(false);
     const [chartDimension, setChartDimension] = useState<{width: number, height: number}>({width: 0, height: 0});
     const [toolbox, setToolbox] = useState<{[index:string]: any[]}>({
         lg: []
     })
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const onResize = (layout: any, oldItem: any, newItem: any, placeholder: any) => {
         if (newItem.i == 'chart') {
@@ -99,7 +96,7 @@ const DropDrag: FunctionComponent = () => {
     }
 
     return (
-        <>
+        <WeboscketProvider>
             <ResponsiveReactGridLayout 
             useCSSTransforms={false}
             className='layout' 
@@ -117,7 +114,7 @@ const DropDrag: FunctionComponent = () => {
             >
                 {generateDOM()}
             </ResponsiveReactGridLayout>
-        </>
+        </WeboscketProvider>
     )
 }
 

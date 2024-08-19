@@ -15,19 +15,19 @@ const Chart : React.FC<ChartProps> = ({width, height}) => {
     const chartRef = useRef<IChartApi|null>(null); // used to store chart instance
     const seriesRef = useRef<ISeriesApi<"Candlestick">|null>(null);
 
-    const handleWebsocketMessage = useCallback((event: MessageEvent) => {
-        const message = JSON.parse(event.data);
-        const candleStick = message.k;
-        const open = parseFloat(candleStick.o);
-        const high = parseFloat(candleStick.h);
-        const low = parseFloat(candleStick.l);
-        const close = parseFloat(candleStick.c);
-        const time = candleStick.T / 1000;
+    // const handleWebsocketMessage = useCallback((event: MessageEvent) => {
+    //     const message = JSON.parse(event.data);
+    //     const candleStick = message.k;
+    //     const open = parseFloat(candleStick.o);
+    //     const high = parseFloat(candleStick.h);
+    //     const low = parseFloat(candleStick.l);
+    //     const close = parseFloat(candleStick.c);
+    //     const time = candleStick.T / 1000;
         
-        seriesRef.current?.update({ open, high, low, close, time });
-    }, []);
+    //     seriesRef.current?.update({ open, high, low, close, time });
+    // }, []);
 
-    const isConnected = useWebsocket(handleWebsocketMessage);
+    // const isConnected = useWebsocket(handleWebsocketMessage);
 
     useEffect(() => {
         if (chartRef.current) return;

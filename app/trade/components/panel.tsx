@@ -1,11 +1,12 @@
 import { useGlobalState } from "@/app/context/global.context";
+import { useWebsocket } from "@/app/context/websocket.context";
 import style from "@/app/style/component/panel.module.scss"
 import { faArrowCircleDown, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const Panel = () => {
-  const {symbol, setSymbol} = useGlobalState();
+  const { klineData, symbolData, setSymbol } = useWebsocket();
   const [dropdownOpen, setDropdownOpen] = React.useState<boolean>(false);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -40,7 +41,7 @@ const Panel = () => {
     <div className={style['panel']}>
       {/* <img className={style['symbol-logo']}/> */}
       <div className={`${style['symbol-container']} ${style['panel-item']}`}>
-        <span className={style['symbol-name']}>{symbol.toUpperCase()}</span>
+        <span className={style['symbol-name']}>{symbolData.hasOwnProperty('s') ? symbolData.s.toUpperCase() : 'BTCUSDT'}</span>
         <button className={style['symbol-button']} onClick={toggleDropDown}>
           <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
         </button>
@@ -61,10 +62,18 @@ const Panel = () => {
           )
         }
       </div>
-      <span className={`${style['price']} ${style['panel-item']}`}>59,508.6</span>
-      <span className={`${style['change']} ${style['panel-item']}`}>+0.19%</span>
-      <span className={`{$style['mark-price']} ${style['panel-item']}`}>Mark price: 59,516.5</span>
-      <span className={`${style['index-price']} ${style['panel-item']}`}>Index price: 59,553.6</span>
+      <span className={`${style['price']} ${style['panel-item']}`}>
+        Market Price: {symbolData.hasOwnProperty('c') ? symbolData.c : 'NA'}
+      </span>
+      <span className={`${style['change']} ${style['panel-item']}`}>
+        Change: {symbolData.hasOwnProperty('p') ? symbolData.p : 'NA'}
+      </span>
+      <span className={`{$style['mark-price']} ${style['panel-item']}`}>
+        High: {symbolData.hasOwnProperty('h') ? symbolData.h : 'NA'}
+      </span>
+      <span className={`${style['index-price']} ${style['panel-item']}`}>
+        Low: {symbolData.hasOwnProperty('l') ? symbolData.l : 'NA'}
+      </span>
     </div>
   )
 }
