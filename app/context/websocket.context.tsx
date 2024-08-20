@@ -9,7 +9,16 @@ interface IKlineData {
     time: number;
 }
 
-interface ISymbolData {}
+interface ISymbolData {
+    eventTime: number;
+    symbol: string;
+    priceChange: string;
+    priceChangePercent: string;
+    lastPrice: string;
+    openPrice: string;
+    highPrice: string;
+    lowPrice: string;
+}
 
 interface IWebsocketProviderProps {
     children: ReactNode;
@@ -17,7 +26,7 @@ interface IWebsocketProviderProps {
 
 interface IWebsocketContext {
     klineData: IKlineData[];
-    symbolData: ISymbolData;
+    symbolData: ISymbolData | null;
     setSymbol: (symbol: string) => void;
 }
 
@@ -25,7 +34,7 @@ const WebSocketContext = createContext<IWebsocketContext|undefined>(undefined);
 
 export const WeboscketProvider = ({children}: IWebsocketProviderProps) => {
     const [klineData, setKlineData] = useState<IKlineData[]>([]);
-    const [symbolData, setSymbolData] = useState<ISymbolData>({});
+    const [symbolData, setSymbolData] = useState<ISymbolData | null>(null);
     const [symbol, setSymbol] = useState<string>('BTCUSDT');
 
     const connectWebsocket = useCallback((url: string, onMessage: (event: MessageEvent) => void) => {
@@ -71,7 +80,16 @@ export const WeboscketProvider = ({children}: IWebsocketProviderProps) => {
         });
         const symbolWs = connectWebsocket(symbolUrl, (event: MessageEvent) => {
             const data = JSON.parse(event.data);
-            setSymbolData(data);
+            setSymbolData({
+                eventTime: data.E,
+                symbol: data.s,
+                priceChange: data.p,
+                priceChangePercent: data.P,
+                lastPrice: data.c,
+                openPrice: data.o,
+                highPrice: data.h,
+                lowPrice: data.l,
+            });
         });
 
         return () => {
@@ -87,6 +105,10 @@ export const WeboscketProvider = ({children}: IWebsocketProviderProps) => {
     )
 }
 
-export const useWebsocket = () => {
-    return useContext(WebSocketContext)
+export const useWebsocket = () : IWebsocketContext=> {
+    const context = useContext(WebSocketContext);
+    if (context === undefined) {
+        throw new Error('useWebsocket must be used within a WebSocketProvider');
+    }
+    return context;
 }

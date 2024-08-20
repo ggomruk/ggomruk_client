@@ -1,4 +1,3 @@
-import { useGlobalState } from "@/app/context/global.context";
 import { useWebsocket } from "@/app/context/websocket.context";
 import style from "@/app/style/component/panel.module.scss"
 import { faArrowCircleDown, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -6,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from 'react'
 
 const Panel = () => {
-  const { klineData, symbolData, setSymbol } = useWebsocket();
+  const { symbolData, setSymbol } = useWebsocket();
   const [dropdownOpen, setDropdownOpen] = React.useState<boolean>(false);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -41,7 +40,7 @@ const Panel = () => {
     <div className={style['panel']}>
       {/* <img className={style['symbol-logo']}/> */}
       <div className={`${style['symbol-container']} ${style['panel-item']}`}>
-        <span className={style['symbol-name']}>{symbolData.hasOwnProperty('s') ? symbolData.s.toUpperCase() : 'BTCUSDT'}</span>
+        <span className={style['symbol-name']}>{symbolData?.symbol.toUpperCase() ?? "BTCUSDT"}</span>
         <button className={style['symbol-button']} onClick={toggleDropDown}>
           <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
         </button>
@@ -63,16 +62,16 @@ const Panel = () => {
         }
       </div>
       <span className={`${style['price']} ${style['panel-item']}`}>
-        Market Price: {symbolData.hasOwnProperty('c') ? symbolData.c : 'NA'}
+        Market Price: {symbolData?.lastPrice ?? 'NA'}
       </span>
       <span className={`${style['change']} ${style['panel-item']}`}>
-        Change: {symbolData.hasOwnProperty('p') ? symbolData.p : 'NA'}
+        Change: {symbolData?.priceChange ?? 'NA'}
       </span>
       <span className={`{$style['mark-price']} ${style['panel-item']}`}>
-        High: {symbolData.hasOwnProperty('h') ? symbolData.h : 'NA'}
+        High: {symbolData?.highPrice ?? 'NA'}
       </span>
       <span className={`${style['index-price']} ${style['panel-item']}`}>
-        Low: {symbolData.hasOwnProperty('l') ? symbolData.l : 'NA'}
+        Low: {symbolData?.lowPrice ?? 'NA'}
       </span>
     </div>
   )
