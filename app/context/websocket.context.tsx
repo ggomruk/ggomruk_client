@@ -12,12 +12,12 @@ interface IKlineData {
 interface ISymbolData {
     eventTime: number;
     symbol: string;
-    priceChange: string;
-    priceChangePercent: string;
-    lastPrice: string;
-    openPrice: string;
-    highPrice: string;
-    lowPrice: string;
+    priceChange: number;
+    priceChangePercent: number;
+    lastPrice: number;
+    openPrice: number;
+    highPrice: number;
+    lowPrice: number;
 }
 
 interface IWebsocketProviderProps {
@@ -83,12 +83,12 @@ export const WeboscketProvider = ({children}: IWebsocketProviderProps) => {
             setSymbolData({
                 eventTime: data.E,
                 symbol: data.s,
-                priceChange: data.p,
-                priceChangePercent: data.P,
-                lastPrice: data.c,
-                openPrice: data.o,
-                highPrice: data.h,
-                lowPrice: data.l,
+                priceChange: parseFloat(data.p),
+                priceChangePercent: parseFloat(data.P),
+                lastPrice: parseFloat(data.c),
+                openPrice: parseFloat(data.o),
+                highPrice: parseFloat(data.h),
+                lowPrice: parseFloat(data.l),
             });
         });
 
