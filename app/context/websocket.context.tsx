@@ -110,6 +110,8 @@ export const WebsocketProvider = ({ children }: IWebsocketProviderProps) => {
         return () => {
             websocketRef.current?.close();
             websocketRef.current = null;
+            setKlineData([]);
+            setSymbolData(null);
         }
 
 
