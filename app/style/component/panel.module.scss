@@ -18,13 +18,30 @@
 
 .panel-item-title {
     color: #888;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    text-decoration: underline;
     margin-bottom: 8px;
 }
 
 .symbol-container {
     display: flex;
     align-items: center;
+}
+
+.symbol-icon-container {
+    background-color: rgb(238, 241, 250);
+    border-radius: 50%; /* Set border-radius to 50% to make it a circle */
+    width: 40px; /* Ensure width and height are equal */
+    height: 40px; /* Ensure width and height are equal */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px; /* Space between the icon and the text */
+  }
+
+.symbol-icon {
+    width: 25px;
+    height: 25px;
 }
 .symbol-name {
     font-weight: bold;
@@ -117,11 +134,67 @@
 }
 
 .dropdown-item-container {
-    margin: 10px;
+    // margin: 10px;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    flex: 1;
+    overflow-y: auto;    
+
+    /* Custom scrollbar styling for WebKit browsers */
+    &::-webkit-scrollbar {
+        width: 12px; /* Width of the scrollbar */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #2E2F34; /* Background of the scrollbar track */
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #888; /* Color of the scrollbar thumb */
+        border-radius: 10px;
+        border: 3px solid #2E2F34; /* Padding around the thumb */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #555; /* Color of the scrollbar thumb on hover */
+    }
+
+    /* Custom scrollbar styling for Firefox */
+    scrollbar-width: thin; /* Width of the scrollbar */
+    scrollbar-color: #888 transparent; /* Color of the scrollbar thumb and track */
+
+    /* Additional styling for Firefox to ensure border-radius */
+    & * {
+        scrollbar-width: thin;
+        scrollbar-color: #888 transparent;
+    }
+
+    & *::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    & *::-webkit-scrollbar-track {
+        background: #2E2F34;
+        border-radius: 10px;
+    }
+
+    & *::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 10px;
+        border: 3px solid #2E2F34;
+    }
+
+    & *::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
 }
 
 .dropdown-item {
-    margin: 10px;
+    padding: 10px;
+    height: 50px;
+    cursor: pointer;
 }
 
 @keyframes dropdownFadeIn {

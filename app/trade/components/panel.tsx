@@ -2,7 +2,9 @@ import { useWebsocket } from "@/app/context/websocket.context";
 import style from "@/app/style/component/panel.module.scss"
 import { faArrowCircleDown, faCross, faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
+import CRYPTO_SYMBOLS from "@/app/utils/crypto";
+import Image from 'next/image'
 
 const Panel = () => {
   const { symbolData, setSymbol } = useWebsocket();
@@ -38,6 +40,7 @@ const Panel = () => {
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     setSearchContent(e.target.value);
   }
 
@@ -64,33 +67,52 @@ const Panel = () => {
   return (
     <div className={style['panel']}>
       <div className={`${style['panel-item']}}`}>
-        <span className={style['symbol-name']}>{symbolData?.symbol.toUpperCase() ?? "BTCUSDT"}</span>
-        <button className={style['symbol-button']} onClick={toggleDropDown}>
-          <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
-        </button>
-        {
-          dropdownOpen && (
-            <div className={style['dropdown-menu']}>
-              <div className={style['dropdown-input-container']}>
-                <FontAwesomeIcon 
-                  icon={faSearch} 
-                  className={style['dropdown-input-icon-search']}/>
-                <input type="text" value={searchContent} onChange={handleInputChange} className={style['dropdown-input']} />
-                <FontAwesomeIcon 
-                  icon={faXmark} 
-                  className={style['dropdown-input-icon-reset']}
-                  onClick={resetSearchContent} 
-                />
+        <div className={style['symbol-container']}>
+          <div className={style['symbol-icon-container']}>
+            <Image src={`./${symbolData?.symbol.slice(0,-4).toLocaleLowerCase()}.svg`} width={20} height={20} alt='Symbol Icon' className={style['symbol-icon']}/>
+          </div>
+          <span className={style['symbol-name']}>{symbolData?.symbol.toUpperCase() ?? "NA"}</span>
+          <button className={style['symbol-button']} onClick={toggleDropDown}>
+            <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
+          </button>
+          {
+            dropdownOpen && (
+              <div className={style['dropdown-menu']}>
+                <div className={style['dropdown-input-container']}>
+                  <FontAwesomeIcon 
+                    icon={faSearch} 
+                    className={style['dropdown-input-icon-search']}/>
+                  <input 
+                    type="text"
+                    placeholder="Search"
+                    value={searchContent} 
+                    onChange={handleInputChange} 
+                    className={style['dropdown-input']} 
+                  />
+                  <FontAwesomeIcon 
+                    icon={faXmark} 
+                    className={style['dropdown-input-icon-reset']}
+                    onClick={resetSearchContent} 
+                  />
+                </div>
+                <hr className={style['divider']}/>
+                <div className={style['dropdown-item-container']}>
+                  {
+                    CRYPTO_SYMBOLS.map((symbol, index) => {
+                      return(
+                        <div key={index} className={style['dropdown-item']} onClick={() => {
+                            setSymbol(symbol)
+                          }}>
+                          {symbol}
+                        </div>
+                      )
+                    })
+                  }
+                </div>
               </div>
-              <hr className={style['divider']}/>
-              <div className={style['dropdown-item-container']}>
-                <div className={style['dropdown-item']}onClick={() => setSymbol('BTCUSDT')}>BTCUSDT</div>
-                <div className={style['dropdown-item']}onClick={() => setSymbol('ETHUSDT')}>ETHUSDT</div>
-                <div className={style['dropdown-item']}onClick={() => setSymbol('SOLUSDT')}>SOLUSDT</div>
-              </div>
-            </div>
-          )
-        }
+            )
+          }
+        </div>
       </div>
 
       {/* Current Price */}
@@ -148,6 +170,14 @@ const Panel = () => {
         <p className={style['panel-item-title']}>24h Low</p>
         <span className={`${style['price-stable']}`}>
           {symbolData?.lowPrice.toFixed(2) ?? 0 }
+        </span>
+      </div>
+
+      {/* Quantity */}
+      <div className={style['panel-item']}>
+        <p className={style['panel-item-title']}>24h Quantity</p>
+        <span className={`${style['price-stable']}`}>
+          {symbolData?.quantity.toFixed(2) ?? 0 }
         </span>
       </div>
     </div>
