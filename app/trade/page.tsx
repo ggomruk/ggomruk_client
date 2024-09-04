@@ -10,8 +10,7 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import _ from 'lodash';
 import style from '@/app/style/page/trade.module.scss'
-import useWebsocket from '../hook/useWebsocket';
-import { WeboscketProvider } from '../context/websocket.context';
+import { WebsocketProvider } from '../context/websocket.context';
 
 export interface IMarketData {
     open: number;
@@ -96,7 +95,7 @@ const DropDrag: FunctionComponent = () => {
     }
 
     return (
-        <WeboscketProvider>
+        <WebsocketProvider>
             <ResponsiveReactGridLayout 
             useCSSTransforms={false}
             className='layout' 
@@ -114,7 +113,7 @@ const DropDrag: FunctionComponent = () => {
             >
                 {generateDOM()}
             </ResponsiveReactGridLayout>
-        </WeboscketProvider>
+        </WebsocketProvider>
     )
 }
 
