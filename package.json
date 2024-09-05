@@ -20,7 +20,8 @@
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "react-grid-layout": "^1.4.4"
+    "react-grid-layout": "^1.4.4",
+    "react-loading-skeleton": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
