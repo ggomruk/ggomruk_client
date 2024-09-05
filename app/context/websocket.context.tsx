@@ -28,6 +28,7 @@ interface IWebsocketProviderProps {
 interface IWebsocketContext {
     klineData: IKlineData[];
     symbolData: ISymbolData | null;
+    symbol: string;
     setSymbol: (symbol: string) => void;
 }
 
@@ -73,8 +74,6 @@ export const WebsocketProvider = ({ children }: IWebsocketProviderProps) => {
         }
 
         // create websocket connection
-        console.log("[websocket][start] Creating websocket connection")
-        
         websocketRef.current = connectWebsocket((event: MessageEvent) => {
             const data = JSON.parse(event.data);
             console.log(data.s)
@@ -144,7 +143,7 @@ export const WebsocketProvider = ({ children }: IWebsocketProviderProps) => {
     }, [symbol]);
 
     return (
-        <WebSocketContext.Provider value={{ klineData, symbolData, setSymbol }}>
+        <WebSocketContext.Provider value={{ klineData, symbolData, symbol, setSymbol }}>
             {children}
         </WebSocketContext.Provider>
     );
