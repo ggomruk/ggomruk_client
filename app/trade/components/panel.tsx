@@ -5,9 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useRef } from 'react'
 import CRYPTO_SYMBOLS from "@/app/utils/crypto";
 import Image from 'next/image'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 const Panel = () => {
-  const { symbolData, setSymbol } = useWebsocket();
+  const { symbolData, symbol, setSymbol } = useWebsocket();
   const [dropdownOpen, setDropdownOpen] = React.useState<boolean>(false);
   const [currentPrice, setCurrentPrice] = React.useState<number>(0);
   const [searchContent, setSearchContent] = React.useState<string>('');
@@ -68,10 +71,17 @@ const Panel = () => {
     <div className={style['panel']}>
       <div className={`${style['panel-item']}}`}>
         <div className={style['symbol-container']}>
+
           <div className={style['symbol-icon-container']}>
-            <Image src={`./${symbolData?.symbol.slice(0,-4).toLocaleLowerCase()}.svg`} width={20} height={20} alt='Symbol Icon' className={style['symbol-icon']}/>
+            <Image src={`./${symbol.slice(0,-4).toLocaleLowerCase()}.svg`} width={20} height={20} alt='Symbol Icon' className={style['symbol-icon']}/>
           </div>
-          <span className={style['symbol-name']}>{symbolData?.symbol.toUpperCase() ?? "NA"}</span>
+
+          <div className={style['symbol-name-container']}>
+            <span className={style['symbol-name']}>{`${symbol.toUpperCase().slice(0, -4)}/${symbol.toUpperCase().slice(-4, symbol.length)}`}</span>
+            <span className={style['symbol-description']}>{CRYPTO_SYMBOLS[symbol.slice(0,-4).toUpperCase() as keyof typeof CRYPTO_SYMBOLS] ?? "NA"}</span>
+          </div>
+
+
           <button className={style['symbol-button']} onClick={toggleDropDown}>
             <FontAwesomeIcon icon={faArrowCircleDown}></FontAwesomeIcon>
           </button>
@@ -98,12 +108,13 @@ const Panel = () => {
                 <hr className={style['divider']}/>
                 <div className={style['dropdown-item-container']}>
                   {
-                    CRYPTO_SYMBOLS.map((symbol, index) => {
+                    Object.keys(CRYPTO_SYMBOLS).map((s, index) => {
                       return(
                         <div key={index} className={style['dropdown-item']} onClick={() => {
-                            setSymbol(symbol)
+                            setSymbol(`${s}USDT`)
+                            setDropdownOpen(false)
                           }}>
-                          {symbol}
+                          {`${s}USDT`}
                         </div>
                       )
                     })
@@ -118,67 +129,82 @@ const Panel = () => {
       {/* Current Price */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>Mark Price</p>
-        <span className={currentPrice > prevPriceRef.current 
-            ? style['price-rise'] 
-            : currentPrice < prevPriceRef.current 
-              ? style['price-drop'] 
-              : style['price-stable']
-            }
-        >
-          {currentPrice.toFixed(2)}
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={currentPrice > prevPriceRef.current 
+                ? style['price-rise'] 
+                : currentPrice < prevPriceRef.current 
+                  ? style['price-drop'] 
+                  : style['price-stable']
+              }>
+                {currentPrice.toFixed(2)}
+              </span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
 
       {/* Market Change */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>24h Change</p>
-        <span className={ symbolData?.priceChange > 0 
-          ? style['price-rise']
-          : symbolData?.priceChange < 0
-            ? style['price-drop']
-            : style['price=stable']
-          }>
-          {symbolData?.priceChange.toFixed(2) ?? 0 }
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={ symbolData?.priceChange > 0 
+                ? style['price-rise']
+                : symbolData?.priceChange < 0
+                  ? style['price-drop']
+                  : style['price=stable']
+              }>
+                {symbolData?.priceChange.toFixed(2) ?? 0 }
+              </span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
 
       {/* Market Change % */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>24h Change (%)</p>
-        <span className={ symbolData?.priceChangePercent > 0 
-          ? style['price-rise']
-          : symbolData?.priceChangePercent < 0
-            ? style['price-drop']
-            : style['price=stable']
-          }>
-          {symbolData?.priceChangePercent 
-            ? `${symbolData?.priceChangePercent.toFixed(2)}%`
-            : '0%' }
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={ symbolData?.priceChangePercent > 0 
+                ? style['price-rise']
+                : symbolData?.priceChangePercent < 0
+                  ? style['price-drop']
+                  : style['price=stable']
+              }>
+                {symbolData?.priceChangePercent.toFixed(2)}%
+              </span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
 
       {/* High */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>24h High</p>
-        <span className={`${style['price-stable']}`}>
-          {symbolData?.highPrice.toFixed(2) ?? 0 }
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={`${style['price-stable']}`}>{symbolData.highPrice.toFixed(2)}</span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
 
       {/* Low */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>24h Low</p>
-        <span className={`${style['price-stable']}`}>
-          {symbolData?.lowPrice.toFixed(2) ?? 0 }
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={`${style['price-stable']}`}>{symbolData.lowPrice.toFixed(2)}</span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
 
       {/* Quantity */}
       <div className={style['panel-item']}>
         <p className={style['panel-item-title']}>24h Quantity</p>
-        <span className={`${style['price-stable']}`}>
-          {symbolData?.quantity.toFixed(2) ?? 0 }
-        </span>
+        {
+          symbolData !== null 
+            ? <span className={`${style['price-stable']}`}>{symbolData.quantity.toFixed(2)}</span>
+            : <Skeleton width='90px' height="1.2rem" baseColor="rgb(241 237 237)"/> 
+        }
       </div>
     </div>
   )
