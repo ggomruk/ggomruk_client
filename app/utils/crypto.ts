@@ -1,15 +1,17 @@
 
-const cryptoList = [
-    'BTCUSDT',
-    'ETHUSDT',
-    'SOLUSDT',
-    'XRPUSDT',
-    'AVAXUSDT',
-    'DOGEUSDT',
-    'SHIBUSDT',
-    'LINKUSDT',
-    'ADAUSDT',
-    'TRXUSDT'
-]
+
+
+const cryptoList = {
+    "BTC": "Bitcoin",
+    "ETH": "Ethereum",
+    "SOL": "Solana",
+    "XRP": "Ripple",
+    "AVAX": "Avalanche",
+    "DOGE": "Dogecoin",
+    "SHIB": "Shibainu",
+    "LINK": "Chainlink",
+    "ADA": "Cardano",
+    "TRX": "Tron"
+}
 
 export default cryptoList;
